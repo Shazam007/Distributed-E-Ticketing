@@ -24,9 +24,13 @@ const handleRequest = async (serviceUrl, path, req, res) => {
             method: req.method,
             url,
             data: req.body,
-            headers: req.headers,
+            headers: {
+                'content-type': 'application/json',
+                'authorization': req.headers.authorization
+            },
         });
-        res.json(data);
+        res.status(200).send(data);
+
     } catch (error) {
         if (error.response) {
             const { status, data } = error.response;
@@ -38,8 +42,11 @@ const handleRequest = async (serviceUrl, path, req, res) => {
 };
 
 // User service routes
-app.use('/api/users', (req, res) => handleRequest(SERVICES.userService, req.path, req, res));
+app.post('/login', (req, res) => handleRequest(SERVICES.userService, '/api/user/login', req, res));
 
+app.post('/register', (req, res) => handleRequest(SERVICES.userService, '/api/user/register', req, res));
+
+  
 // Ticketing service routes
 app.use('/api/ticketing', (req, res) => handleRequest(SERVICES.ticketingService, req.path, req, res));
 
