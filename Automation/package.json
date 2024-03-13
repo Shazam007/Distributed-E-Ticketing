@@ -1,0 +1,17 @@
+{
+  "name": "easypass-automation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "create": "node index.js create",
+    "delete": "node index.js delete"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-cloudformation": "^3.533.0",
+    "@aws-sdk/client-ec2": "^3.532.0",
+    "@aws-sdk/core": "^3.529.1"
+  }
+}
