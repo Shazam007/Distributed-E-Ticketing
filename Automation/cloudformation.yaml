@@ -27,15 +27,33 @@ Resources:
       UserData:
         Fn::Base64: |
           #!/bin/bash
+          rm -f /var/log/userdata.log
           exec > >(tee /var/log/userdata.log|logger -t user-data -s 2>/dev/console) 2>&1
           echo "Starting UserData execution at $(date)"
+          export DEBIAN_FRONTEND=noninteractive
           apt-get update -y
-          apt-get install nginx -y
+          apt-get install nginx nodejs npm -y
           systemctl start nginx
           systemctl enable nginx
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+          source ~/.bashrc
+          nvm install 18
+          nvm use 18
           mkdir /var/easypass
-          cd mkdir /var/easypass
-          
+          cd /var/easypass
+          git clone https://github.com/Shazam007/Distributed-E-Ticketing.git
+          cd ./Distributed-E-Ticketing
+          for folder in */; do
+            if [ "$folder" != "Automation/" ]; then
+              cd "$folder" || continue
+              echo "Installing dependencies for $folder"
+              npm install
+              echo "Running npm run dev for $folder"
+              npm start &
+              cd ..
+            fi
+          done
+
 
 Outputs:
   InstanceId:
