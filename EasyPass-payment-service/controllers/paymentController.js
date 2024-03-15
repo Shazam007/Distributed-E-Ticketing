@@ -33,32 +33,23 @@ const processPayment = async (req, res, next) => {
 const refundPayment = async (req, res, next) => {
     try {
         const paymentId = req.params.id;
-        const paymentRef = await db.collection('Payments').doc(paymentId);
-        const refundData = {
-            status: 'refunded',
-            timestamp: new Date().toISOString() // Update timestamp to mark refund time
-        };
-        await paymentRef.update(refundData);
-
-        res.send('Payment refunded successfully');
-    } catch (error) {
-        res.status(400).send(error.message);
-    }
-}
-
-// Function to verify payment
-const verifyPayment = async (req, res, next) => {
-    try {
-        const paymentId = req.params.id;
-        const paymentRef = await db.collection('Payments').doc(paymentId);
-        const paymentDoc = await paymentRef.get();
-
-        if (!paymentDoc.exists) {
-            res.status(404).send('Payment not found');
-        } else {
-            const paymentData = paymentDoc.data();
-            res.send(paymentData);
+        // const paymentRef = await db.collection('Payments').doc(paymentId);
+        const paymentsCollection = await db.collection('Payments');
+        const paymentQuery = await paymentsCollection
+                .where('transactionId', '==', paymentId)
+                .get();
+                //assuming payment id is unique
+        if (!paymentQuery.empty) {
+            const paymentDoc = paymentQuery.docs[0];
+            await paymentDoc.ref.update({ 
+                status: 'refunded',
+                timestamp: new Date().toISOString()
+            });
+        }else {
+            throw new Error(`No payment found for ${paymentId}`);
         }
+
+        res.status(200).send('Payment refunded successfully');
     } catch (error) {
         res.status(400).send(error.message);
     }
@@ -71,6 +62,5 @@ function generateTransactionId() {
 
 module.exports = {
     processPayment,
-    refundPayment,
-    verifyPayment
+    refundPayment
 }

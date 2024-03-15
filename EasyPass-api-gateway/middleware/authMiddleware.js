@@ -6,11 +6,15 @@ dotenv.config();
 const authMiddleware = (req, res, next) => {
     console.log(req.path)
     
-    if (req.path === '/api/user/register') {
+    if (req.path === '/register') {
         return next(); // Skip to the next route
     }
 
-    if (req.path === '/api/user/login') {
+    if (req.path === '/login') {
+        return next(); // Skip to the next route
+    }
+
+    if (req.path === '/viewEvents') {
         return next(); // Skip to the next route
     }
 

@@ -6,6 +6,7 @@ class User {
         email,
         user_language, 
         password,
+        role,
         ) {
 
             // Validation for username: Should be a non-empty string
@@ -24,12 +25,17 @@ class User {
                 throw new Error("Username must be a non-empty string.");
             }
 
+            if (typeof role !== "string" || role.trim() === "") {
+                throw new Error("Role must be a non-empty string.");
+            }
+
             this.username = username;
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;
             this.user_language = user_language;
             this.password = password;
+            this.role = role;
     }
 
 }

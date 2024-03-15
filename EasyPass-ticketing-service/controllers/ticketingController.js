@@ -60,7 +60,6 @@ const getTicketAvailability = async (req, res, next) => {
         } else {
             const eventData = event.data();
             const soldTicketsCount = await getSoldTicketsCount(eventId);
-            const availableTickets = eventData.capacity - soldTicketsCount;
 
             const ticketsCollection = await db.collection('Tickets');
             const ticketQuery = await ticketsCollection
@@ -76,20 +75,65 @@ const getTicketAvailability = async (req, res, next) => {
                 if (!ticketCounts[ticketType]) {
                     ticketCounts[ticketType] = {
                         totalTickets: 0,
-                        reservedTickets: 0
+                        reservedTickets: 0,
+                        availableTickets: 0
                     };
                 }
 
                 ticketCounts[ticketType].totalTickets += ticket.quantity || 0;
-                ticketCounts[ticketType].reservedTickets += ticket.reservedQuantity || 0;
+                ticketCounts[ticketType].reservedTickets += ticket.soldQuantity || 0;
+                ticketCounts[ticketType].availableTickets = ticketCounts[ticketType].totalTickets - ticketCounts[ticketType].reservedTickets || 0;
             });
 
-            res.status(200).send({ availableTickets, ticketCounts });
+            res.status(200).send({ ticketCounts });
         }
     } catch (error) {
         res.status(400).send(error.message);
     }
 }
+
+const updateTicketAvailability = async (req, res, next) => {
+    try {
+        const eventId = req.params.eventId;
+        const tickets = req.body.tickets;
+
+        const event = await db.collection('Events').doc(eventId).get();
+
+        if (!event.exists) {
+            res.status(404).send('Event with the given ID not found');
+        } else {
+            const ticketsCollection = await db.collection('Tickets');
+            const ticketQuery = await ticketsCollection
+                .where('eventId', '==', eventId)
+                .get();
+            let ticketCounts = {};
+            //update quatity and soldQuantity based on the request
+            await ticketQuery.docs.forEach(async (doc) => {
+                const ticketData = doc.data();
+                const ticketType = ticketData.type;
+                
+                // Iterate over each ticket object using forEach
+                tickets.forEach(async ticket => {
+                    if (ticket.type == ticketType) {
+                        const quantity = ticket.quantity;
+                        const newQuantity = ticketData.quantity + quantity;
+                        const newSoldQuantity = ticketData.soldQuantity - quantity;
+                        // Update ticket document in the database
+                        await doc.ref.update({
+                            quantity: newQuantity,
+                            soldQuantity: newSoldQuantity
+                        });
+                    }
+                });
+            });
+
+            res.status(200).send('Tickets updated successfully');
+        }
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+}
+
 
 async function getSoldTicketsCount(eventId) {
     const ticketsCollection = await db.collection('Tickets');
@@ -101,7 +145,7 @@ async function getSoldTicketsCount(eventId) {
 
     ticketQuery.forEach(ticketDoc => {
         const ticket = ticketDoc.data();
-        soldTicketsCount += (ticket.quantity || 0);
+        soldTicketsCount += (ticket.soldQuantity || 0);
     });
 
     return soldTicketsCount;
@@ -133,7 +177,8 @@ const addTicketsToInventory = async (req, res, next) => {
             eventId,
             ticketData.type,
             ticketData.price,
-            ticketData.quantity
+            ticketData.quantity,
+            ticketData.soldQuantity,
         ));
 
         const ticketsCollection = await db.collection('Tickets');
@@ -170,7 +215,7 @@ const issueTickets = async (req, res, next) => {
     try {
         const eventId = req.params.id;
         const ticketsData = req.body;
-
+        console.log(ticketsData);
         const ticketsCollection = await db.collection('Tickets');
 
         ticketsData.forEach(async ticketData => {
@@ -184,7 +229,10 @@ const issueTickets = async (req, res, next) => {
                 const ticket = ticketDoc.data();
 
                 if (ticket.quantity >= ticketData.quantity) {
-                    await ticketDoc.ref.update({ quantity: ticket.quantity - ticketData.quantity });
+                    await ticketDoc.ref.update({ 
+                        quantity: ticket.quantity - ticketData.quantity,
+                        soldQuantity:ticket.soldQuantity + ticketData.quantity
+                    });
                 } else {
                     throw new Error(`Insufficient tickets available for ${ticketData.type}`);
                 }
@@ -249,5 +297,6 @@ module.exports = {
     addTicketsToInventory,
     issueTickets,
     updateTicketInventory,
-    deleteEventTickets
+    deleteEventTickets,
+    updateTicketAvailability
 }

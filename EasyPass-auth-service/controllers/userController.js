@@ -18,6 +18,7 @@ const userRegister = async (req, res, next) => {
             userData.email,
             userData.user_language,
             hashedPassword,
+            userData.role,
         );
 
         const usersCollection = await db.collection('Users'); 
@@ -52,13 +53,14 @@ const userLogin = async (req, res, next) => {
         } else {
             const userDoc = querySnapshot.docs[0];
             const user = userDoc.data(); 
-            const isTrue = bcrypt.compareSync(userData.password, user.password)
+            const isTrue = bcrypt.compareSync(userData.password, user.password);
             if(isTrue === true){
                 const userId = userDoc.id;
                 var token = jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET);
                 user.token = token
                 res.status(200).send(user)
             }else{
+
                 res.status(404).send('Invalid password'); 
             }
         }        
@@ -111,6 +113,7 @@ const getAllUsers = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
     try {
+        console.log(req.params)
         const id = req.params.id;
         const user = await db.collection('Users').doc(id);
         const data = await user.get();
