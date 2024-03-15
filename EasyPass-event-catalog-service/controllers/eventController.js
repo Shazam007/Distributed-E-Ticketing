@@ -2,7 +2,9 @@
 const db = require('../config/db');
 const Event = require('../models/event');
 // const redis = require('redis');
-// const { promisify } = require('util');
+const { promisify } = require('util');
+// const redis = require('redis');
+const { promisify } = require('util');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -44,7 +46,7 @@ const updateEvent = async (req, res, next) => {
         const eventsCollection = await db.collection('Events').doc(id);
         await eventsCollection.update(data);
 
-       // await setAsync(id, JSON.stringify(data)); // Update cached event data in Redis
+        await setAsync(id, JSON.stringify(data)); // Update cached event data in Redis
 
         res.send('Event record updated successfully');
     } catch (error) {
@@ -58,7 +60,7 @@ const deleteEvent = async (req, res, next) => {
 
         await db.collection('Events').doc(id).delete();
 
-        await client.del(id); // Delete cached event data in Redis
+        // await client.del(id); // Delete cached event data in Redis
 
         res.send('Event record deleted successfully');
     } catch (error) {
