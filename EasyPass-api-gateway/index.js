@@ -75,6 +75,7 @@ async function processPayment(req, res) {
 
 // Method to handle order management
 async function manageOrder(req, res) {
+    console.log(req.body);
     const orderResponse = await handleRequest(SERVICES.orderManagmentService, `/api/order`, req.method, req, req.body);
 
     if (orderResponse.error) {
@@ -128,24 +129,54 @@ app.get('/refundPayment', async (req, res) => {
     try {
         //only admin can perform this
         const isAdmin = await isAdminUser(req, res);
-        if(isAdmin){
-        // update status in payment -> refunded
-        const refundPaymentResponse = await handleRequest(SERVICES.paymentService, `/api/payment/${req.body.paymentId}/refund`, 'get', req, req.body);
-        if (refundPaymentResponse.error) {
-            return res.status(refundPaymentResponse.status).json(refundPaymentResponse.error);
+        if (isAdmin) {
+            // update status in payment -> refunded
+            const refundPaymentResponse = await handleRequest(SERVICES.paymentService, `/api/payment/${req.body.paymentId}/refund`, 'get', req, req.body);
+            if (refundPaymentResponse.error) {
+                return res.status(refundPaymentResponse.status).json(refundPaymentResponse.error);
+            }
+            // Capture tickets allocated with the refunded order
+            const orderResponse = await orderDetaisByPymentID(req, res);
+            // Increase available ticket count based on that
+            const ticketResp = await updateTicketAvailability(req, res);
+            // Send refunded payment id
+            res.status(200).send({ refundPaymentResponse, orderResponse,ticketResp });
+        } else {
+            return res.status(403).send("Only admins can refund payments"); 
         }
-        //Capture tickets allocated with the refunded order
-        //increase available ticket count based on that
-        //send refunded payment id
-        }else{
-            return res.status(403).send("only admins can refund payments"); 
-        }
-        
     } catch (error) {
+        // Handle errors without sending a response here
+        console.error(error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
+
+// Method to get order details by payment
+async function orderDetaisByPymentID(req, res) {
+    console.log(req.body.paymentId)
+    const orderResponse = await handleRequest(SERVICES.orderManagmentService, `/api/order/updatedOrder/${req.body.paymentId}`, req.method, req, req.body);
+
+    if (orderResponse.error) {
+       res.status(orderResponse.status).json(orderResponse.error);
+    }
+
+    req.body.eventId = orderResponse.eventId;
+    req.body.tickets = orderResponse.tickets;
+    console.log(orderResponse.eventId)
+    return orderResponse;
+}
+
+// Method to update ticket quatities
+async function updateTicketAvailability(req, res) {
+    const ticketResp = await handleRequest(SERVICES.ticketingService, `/api/tickets/${req.body.eventId}/updateAvailability`, 'put', req, req.body);
+
+    if (ticketResp.error) {
+        return res.status(ticketResp.status).json(ticketResp.error);
+    }
+
+    return ticketResp;
+}
 
 
 // User service routes

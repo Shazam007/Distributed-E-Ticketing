@@ -92,49 +92,39 @@ const getTicketAvailability = async (req, res, next) => {
     }
 }
 
-// update tickets for event with payment refund
-// request -> /api/ticketing/updateTicketAvailability/:eventId
-// {
-//     "ticketCounts": {
-//         "General Admission": {
-//             "quantity":5
-//         },
-//         "VIP": {
-//             "quantity":7
-//         }
-//     }
-// }
 const updateTicketAvailability = async (req, res, next) => {
     try {
-        const eventId = req.params.id;
+        const eventId = req.params.eventId;
+        const tickets = req.body.tickets;
 
         const event = await db.collection('Events').doc(eventId).get();
 
         if (!event.exists) {
             res.status(404).send('Event with the given ID not found');
         } else {
-            const eventData = event.data();
-            const soldTicketsCount = await getSoldTicketsCount(eventId);
-
             const ticketsCollection = await db.collection('Tickets');
             const ticketQuery = await ticketsCollection
                 .where('eventId', '==', eventId)
                 .get();
-
             let ticketCounts = {};
             //update quatity and soldQuantity based on the request
             await ticketQuery.docs.forEach(async (doc) => {
                 const ticketData = doc.data();
                 const ticketType = ticketData.type;
-                if (!ticketCounts[ticketType]) {
-                    const newQuantity = ticketData.quantity + quantity;
-                    const newSoldQuantity = ticketData.soldQuantity - quantity;
-                    // Update ticket document in the database
-                    await doc.ref.update({
-                        quantity: newQuantity,
-                        soldQuantity: newSoldQuantity
-                    });
-                }
+                
+                // Iterate over each ticket object using forEach
+                tickets.forEach(async ticket => {
+                    if (ticket.type == ticketType) {
+                        const quantity = ticket.quantity;
+                        const newQuantity = ticketData.quantity + quantity;
+                        const newSoldQuantity = ticketData.soldQuantity - quantity;
+                        // Update ticket document in the database
+                        await doc.ref.update({
+                            quantity: newQuantity,
+                            soldQuantity: newSoldQuantity
+                        });
+                    }
+                });
             });
 
             res.status(200).send('Tickets updated successfully');

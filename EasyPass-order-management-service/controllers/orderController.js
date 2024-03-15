@@ -51,6 +51,41 @@ const getTicketOrder = async (req, res, next) => {
     }
 }
 
+const getUpdatedTicketOrderbyPaymentId = async (req, res, next) => {
+    try {
+        const paymentId = req.params.paymentId;
+        console.log(paymentId);
+
+        const orderCollection = await db.collection('TicketOrders');
+        const orderQuery = await orderCollection
+            .where('paymentId', '==', paymentId)
+            .get();
+
+        if (!orderQuery.empty) {
+            const orderDoc = orderQuery.docs[0];
+
+            // Update the status to "refunded"
+            await orderDoc.ref.update({ 
+                status: "refunded"
+            });
+
+            // Fetch the updated document
+            const updatedOrderQuery = await orderDoc.ref.get();
+            const updatedOrderData = updatedOrderQuery.data();
+
+            // Send the updated order data back to the client
+            res.status(200).send(updatedOrderData);
+        } else {
+            // If no orders found for the payment ID, send an error response
+            throw new Error(`Orders not found for payment ${paymentId}`);
+        }
+    } catch (error) {
+        // Send error response if any error occurs
+        res.status(400).send(error.message);
+    }
+};
+
+
 const deleteTicketOrder = async (req, res, next) => {
     try {
         const orderId = req.params.id;
@@ -71,6 +106,7 @@ module.exports = {
     createTicketOrder,
     updateTicketOrder,
     getTicketOrder,
-    deleteTicketOrder
+    deleteTicketOrder,
+    getUpdatedTicketOrderbyPaymentId
 }
 

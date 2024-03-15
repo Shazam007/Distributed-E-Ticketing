@@ -16,7 +16,7 @@ router.post('/tickets/:id', addTicketsToInventory);
 router.post('/tickets/reserve/:id', issueTickets);
 router.put('/tickets/:id', updateTicketInventory);
 router.delete('/tickets/:id', deleteEventTickets);
-router.put('/tickets/:id', updateTicketAvailability);
+router.put('/tickets/:eventId/updateAvailability', updateTicketAvailability);
 
 module.exports = {
     routes: router

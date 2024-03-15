@@ -4,7 +4,8 @@ const {
     createTicketOrder,
     updateTicketOrder,
     getTicketOrder,
-    deleteTicketOrder
+    deleteTicketOrder,
+    getUpdatedTicketOrderbyPaymentId
       } = require('../controllers/orderController');
 
 const router = express.Router();
@@ -13,6 +14,7 @@ router.post('/order', createTicketOrder);
 router.put('/order/:id', updateTicketOrder);
 router.get('/order/:id', getTicketOrder);
 router.delete('/order/:id', deleteTicketOrder);
+router.get('/order/updatedOrder/:paymentId', getUpdatedTicketOrderbyPaymentId);
 
 module.exports = {
     routes: router
