@@ -3,7 +3,8 @@ class Ticket {
         eventId,
         type,
         price,
-        quantity
+        quantity,
+        soldQuantity,
     ) {
         // Validation for eventId: Should be a non-empty string
         if (typeof eventId !== "string" || eventId.trim() === "") {
@@ -25,10 +26,16 @@ class Ticket {
             throw new Error("Ticket quantity must be a positive integer.");
         }
 
+        // Validation for soldQuantity: Should be a positive integer
+        if (typeof soldQuantity !== "number" || soldQuantity <= 0 || !Number.isInteger(soldQuantity)) {
+            throw new Error("Ticket quantity must be a positive integer.");
+        }
+
         this.eventId = eventId;
         this.type = type;
         this.price = price;
         this.quantity = quantity;
+        this.soldQuantity = soldQuantity;
     }
 }
 

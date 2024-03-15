@@ -5,7 +5,8 @@ const {
     addTicketsToInventory,
     issueTickets,
     updateTicketInventory,
-    deleteEventTickets
+    deleteEventTickets,
+    updateTicketAvailability
       } = require('../controllers/ticketingController');
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.post('/tickets/:id', addTicketsToInventory);
 router.post('/tickets/reserve/:id', issueTickets);
 router.put('/tickets/:id', updateTicketInventory);
 router.delete('/tickets/:id', deleteEventTickets);
+router.put('/tickets/:id', updateTicketAvailability);
 
 module.exports = {
     routes: router

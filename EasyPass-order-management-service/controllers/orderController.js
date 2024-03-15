@@ -12,11 +12,10 @@ const createTicketOrder = async (req, res, next) => {
         const orderId = generateOrderId(); 
 
         const ticketOrder = new TicketOrder(orderId, userId, eventId, tickets, totalPrice, paymentId, status);
-
         const ordersCollection = await db.collection('TicketOrders');
         await ordersCollection.add(JSON.parse(JSON.stringify(ticketOrder)));
-
-        res.status(201).send('Ticket order created successfully');
+        
+        res.status(201).send(orderId);
     } catch (error) {
         res.status(400).send(error.message);
     }

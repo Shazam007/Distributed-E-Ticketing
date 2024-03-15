@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const { authMiddleware } = require('./middleware/authMiddleware');
 const swagger = require('./config/swagger');
 const OrderRoutes = require('./routes/order-routes');
 
@@ -18,7 +17,6 @@ app.use(bodyParser.json());
 
 swagger(app)
 
-app.use(authMiddleware);
 app.use('/api', OrderRoutes.routes);
 
 app.listen(PORT, () => console.log('App is listening on url http://'+HOST+':' + PORT));

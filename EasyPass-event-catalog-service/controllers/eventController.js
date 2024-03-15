@@ -1,16 +1,16 @@
 'use strict';
 const db = require('../config/db');
 const Event = require('../models/event');
-const redis = require('redis');
-const { promisify } = require('util');
+// const redis = require('redis');
+// const { promisify } = require('util');
 const dotenv = require('dotenv');
 dotenv.config();
 
 // Create Redis client
-const client = redis.createClient();
+// const client = redis.createClient();
 
-const getAsync = promisify(client.get).bind(client);
-const setAsync = promisify(client.set).bind(client);
+// const getAsync = promisify(client.get).bind(client);
+// const setAsync = promisify(client.set).bind(client);
 
 const createEvent = async (req, res, next) => {
     try {
@@ -44,7 +44,7 @@ const updateEvent = async (req, res, next) => {
         const eventsCollection = await db.collection('Events').doc(id);
         await eventsCollection.update(data);
 
-        await setAsync(id, JSON.stringify(data)); // Update cached event data in Redis
+       // await setAsync(id, JSON.stringify(data)); // Update cached event data in Redis
 
         res.send('Event record updated successfully');
     } catch (error) {

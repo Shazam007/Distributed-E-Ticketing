@@ -46,24 +46,6 @@ const refundPayment = async (req, res, next) => {
     }
 }
 
-// Function to verify payment
-const verifyPayment = async (req, res, next) => {
-    try {
-        const paymentId = req.params.id;
-        const paymentRef = await db.collection('Payments').doc(paymentId);
-        const paymentDoc = await paymentRef.get();
-
-        if (!paymentDoc.exists) {
-            res.status(404).send('Payment not found');
-        } else {
-            const paymentData = paymentDoc.data();
-            res.send(paymentData);
-        }
-    } catch (error) {
-        res.status(400).send(error.message);
-    }
-}
-
 // Generate a unique transaction ID (placeholder implementation)
 function generateTransactionId() {
     return Math.random().toString(36).substr(2, 9);
@@ -71,6 +53,5 @@ function generateTransactionId() {
 
 module.exports = {
     processPayment,
-    refundPayment,
-    verifyPayment
+    refundPayment
 }
