@@ -3,8 +3,6 @@ const db = require('../config/db');
 const Event = require('../models/event');
 // const redis = require('redis');
 const { promisify } = require('util');
-// const redis = require('redis');
-const { promisify } = require('util');
 const dotenv = require('dotenv');
 dotenv.config();
 
