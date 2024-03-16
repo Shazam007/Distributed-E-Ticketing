@@ -353,6 +353,19 @@ app.delete('/deleteTickets', async (req, res) => {
     }
 });
 
+app.get('/ticketsAvailability', async (req, res) => {
+    try {
+        const ticketResponse = await handleRequest(SERVICES.ticketingService, `/api/tickets/${req.body.eventId}`, req.method , req, req.body);
+        if (ticketResponse.error) {
+            return res.status(ticketResponse.status).json(ticketResponse.error);
+        }
+        return res.status(200).send(ticketResponse); 
+    } catch (error) {
+        // Handle any errors that occur during the process
+        return res.status(500).json({ error: error.message });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`API Gateway running on http://localhost:${PORT}`);
 });
