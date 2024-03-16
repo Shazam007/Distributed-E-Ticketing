@@ -2,12 +2,14 @@
 const express = require('express');
 const axios = require('axios');
 const dotenv = require('dotenv');
+const cors = require('cors');
 dotenv.config();
 const { authMiddleware } = require('./middleware/authMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors);
 app.use(express.json());
 
 const SERVICES = {
@@ -180,9 +182,9 @@ async function updateTicketAvailability(req, res) {
 
 
 // User service routes
-app.post('/login', (req, res) =>{
+app.post('/login', async (req, res) =>{
     try{
-        const loginResponse = handleRequest(SERVICES.userService, '/api/user/login','post', req, req.body);
+        const loginResponse = await handleRequest(SERVICES.userService, '/api/user/login','post', req, req.body);
         if (loginResponse.error) {
             return res.status(loginResponse.status).json(loginResponse.error);
         }

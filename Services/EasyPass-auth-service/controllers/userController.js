@@ -54,11 +54,12 @@ const userLogin = async (req, res, next) => {
             const userDoc = querySnapshot.docs[0];
             const user = userDoc.data(); 
             const isTrue = bcrypt.compareSync(userData.password, user.password);
+            console.log(isTrue);
             if(isTrue === true){
                 const userId = userDoc.id;
                 var token = jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET);
-                user.token = token
-                res.status(200).send(user)
+                user.token = token;
+                res.status(200).send(user);
             }else{
 
                 res.status(404).send('Invalid password'); 
