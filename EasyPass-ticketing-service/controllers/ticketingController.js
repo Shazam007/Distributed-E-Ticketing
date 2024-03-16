@@ -59,8 +59,9 @@ const getTicketAvailability = async (req, res, next) => {
             res.status(404).send('Event with the given ID not found');
         } else {
             const eventData = event.data();
+            console.log(eventData)
             const soldTicketsCount = await getSoldTicketsCount(eventId);
-            const availableTickets = eventData.capacity - soldTicketsCount;
+            // const availableTickets = eventData.capacity - soldTicketsCount;
 
             const ticketsCollection = await db.collection('Tickets');
             const ticketQuery = await ticketsCollection
@@ -76,15 +77,17 @@ const getTicketAvailability = async (req, res, next) => {
                 if (!ticketCounts[ticketType]) {
                     ticketCounts[ticketType] = {
                         totalTickets: 0,
-                        reservedTickets: 0
+                        reservedTickets: 0,
+                        availableTickets: 0
                     };
                 }
 
                 ticketCounts[ticketType].totalTickets += ticket.quantity || 0;
                 ticketCounts[ticketType].reservedTickets += ticket.reservedQuantity || 0;
+                ticketCounts[ticketType].availableTickets = ticketCounts[ticketType].totalTickets - ticketCounts[ticketType].reservedTickets || 0;
             });
 
-            res.status(200).send({ availableTickets, ticketCounts });
+            res.status(200).send({ ticketCounts });
         }
     } catch (error) {
         res.status(400).send(error.message);
