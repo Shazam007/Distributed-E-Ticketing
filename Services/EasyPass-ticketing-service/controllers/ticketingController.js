@@ -76,13 +76,15 @@ const getTicketAvailability = async (req, res, next) => {
                     ticketCounts[ticketType] = {
                         totalTickets: 0,
                         reservedTickets: 0,
-                        availableTickets: 0
+                        availableTickets: 0,
+                        price:0
                     };
                 }
 
                 ticketCounts[ticketType].totalTickets += ticket.quantity || 0;
                 ticketCounts[ticketType].reservedTickets += ticket.soldQuantity || 0;
                 ticketCounts[ticketType].availableTickets = ticketCounts[ticketType].totalTickets - ticketCounts[ticketType].reservedTickets || 0;
+                ticketCounts[ticketType].price = ticket.price;
             });
 
             res.status(200).send({ ticketCounts });
