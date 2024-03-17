@@ -165,7 +165,6 @@ async function orderDetaisByPymentID(req, res) {
 
     req.body.eventId = orderResponse.eventId;
     req.body.tickets = orderResponse.tickets;
-    console.log(orderResponse.eventId)
     return orderResponse;
 }
 
@@ -241,6 +240,7 @@ app.post('/addEvent', async (req, res) => {
 
         if(isAdmin){
             const eventsResponse = await handleRequest(SERVICES.eventService, '/api/event', req.method , req, req.body);
+            console.log(eventsResponse)
             if (eventsResponse.error) {
                 return res.status(eventsResponse.status).json(eventsResponse.error);
             }
