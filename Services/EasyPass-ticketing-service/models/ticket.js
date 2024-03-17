@@ -27,8 +27,8 @@ class Ticket {
         }
 
         // Validation for soldQuantity: Should be a positive integer
-        if (typeof soldQuantity !== "number" || soldQuantity <= 0 || !Number.isInteger(soldQuantity)) {
-            throw new Error("Ticket quantity must be a positive integer.");
+        if (typeof soldQuantity !== "number" || soldQuantity < 0 || !Number.isInteger(soldQuantity)) {
+            throw new Error("Ticket soldQuantity must be a positive integer.");
         }
 
         this.eventId = eventId;
