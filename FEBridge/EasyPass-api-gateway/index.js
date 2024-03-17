@@ -21,7 +21,8 @@ const SERVICES = {
 };
 
 app.use(authMiddleware);
-// Generic request handler
+
+// request handler
 const handleRequest = async (serviceUrl, path, method, req, data) => {
     try {
         const url = `${serviceUrl}${path}`;
@@ -46,7 +47,7 @@ const handleRequest = async (serviceUrl, path, method, req, data) => {
     }
 };
 
-// Method to handle ticket reservation
+// handle ticket reservation
 async function reserveTickets(req, res, eventId) {
     const reservationResponse = await handleRequest(SERVICES.ticketingService, `/api/tickets/reserve/${eventId}`, req.method, req, req.body.tickets);
 
@@ -57,10 +58,9 @@ async function reserveTickets(req, res, eventId) {
     return reservationResponse;
 }
 
-// Method to handle payment processing
+// handle payment processing
 async function processPayment(req, res) {
     req.body.paymentInfo.userId = req.user.id;
-    console.log(req.body.paymentInfo);
     const paymentResponse = await handleRequest(SERVICES.paymentService, `/api/payment`, req.method, req, req.body.paymentInfo);
 
     if (paymentResponse.error) {
@@ -75,9 +75,8 @@ async function processPayment(req, res) {
     return paymentResponse;
 }
 
-// Method to handle order management
+// handle order management
 async function manageOrder(req, res) {
-    console.log(req.body);
     const orderResponse = await handleRequest(SERVICES.orderManagmentService, `/api/order`, req.method, req, req.body);
 
     if (orderResponse.error) {
@@ -87,7 +86,7 @@ async function manageOrder(req, res) {
     return orderResponse;
 }
 
-// Main route handler
+// Purchase Tickets
 app.post('/purchaseTicket', async (req, res) => {
     try {
         const ticketResponse = await handleRequest(SERVICES.ticketingService, `/api/tickets/${req.body.eventId}`, 'get', req, req.body);
@@ -127,6 +126,7 @@ app.post('/purchaseTicket', async (req, res) => {
     }
 });
 
+//refund payments
 app.get('/refundPayment', async (req, res) => {
     try {
         //only admin can perform this
@@ -148,15 +148,14 @@ app.get('/refundPayment', async (req, res) => {
         }
     } catch (error) {
         // Handle errors without sending a response here
-        console.error(error);
+        
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
 
-// Method to get order details by payment
+// get order details by payment
 async function orderDetaisByPymentID(req, res) {
-    console.log(req.body.paymentId)
     const orderResponse = await handleRequest(SERVICES.orderManagmentService, `/api/order/updatedOrder/${req.body.paymentId}`, req.method, req, req.body);
 
     if (orderResponse.error) {
@@ -168,7 +167,7 @@ async function orderDetaisByPymentID(req, res) {
     return orderResponse;
 }
 
-// Method to update ticket quatities
+// update ticket quatities
 async function updateTicketAvailability(req, res) {
     const ticketResp = await handleRequest(SERVICES.ticketingService, `/api/tickets/${req.body.eventId}/updateAvailability`, 'put', req, req.body);
 
@@ -179,8 +178,7 @@ async function updateTicketAvailability(req, res) {
     return ticketResp;
 }
 
-
-// User service routes
+// User Login
 app.post('/login', async (req, res) =>{
     try{
         const loginResponse = await handleRequest(SERVICES.userService, '/api/user/login','post', req, req.body);
@@ -194,6 +192,7 @@ app.post('/login', async (req, res) =>{
     }
 });
 
+//User register
 app.post('/register', async (req, res) => {
     try {
         const registeredRes = await handleRequest(SERVICES.userService, '/api/user/register', req.method, req, req.body);
@@ -207,6 +206,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
+//View all events
 app.get('/viewEvents', async (req, res) => {
     try {
         const eventsResponse = await handleRequest(SERVICES.eventService, '/api/events', req.method , req, req.body);
@@ -220,7 +220,7 @@ app.get('/viewEvents', async (req, res) => {
     }
 });
 
-// Method to handle order management
+// check user role
 async function isAdminUser(req, res) {
     const userResp = await handleRequest(SERVICES.userService, `/api/user/${req.user.id}`, 'get', req, req.body);
 
@@ -234,13 +234,13 @@ async function isAdminUser(req, res) {
     return false;
 }
 
+//add events to the system
 app.post('/addEvent', async (req, res) => {
     try {
         const isAdmin = await isAdminUser(req, res);
 
         if(isAdmin){
             const eventsResponse = await handleRequest(SERVICES.eventService, '/api/event', req.method , req, req.body);
-            console.log(eventsResponse)
             if (eventsResponse.error) {
                 return res.status(eventsResponse.status).json(eventsResponse.error);
             }
@@ -255,6 +255,7 @@ app.post('/addEvent', async (req, res) => {
     }
 });
 
+//update events
 app.put('/updateEvent', async (req, res) => {
     try {
         const isAdmin = await isAdminUser(req, res);
@@ -275,6 +276,7 @@ app.put('/updateEvent', async (req, res) => {
     }
 });
 
+//delete events
 app.delete('/deleteEvent', async (req, res) => {
     try {
         const isAdmin = await isAdminUser(req, res);
@@ -295,6 +297,7 @@ app.delete('/deleteEvent', async (req, res) => {
     }
 });
 
+//Add tickets to the selected event
 app.post('/addTicketsToEvent', async (req, res) => {
     try {
         const isAdmin = await isAdminUser(req, res);
@@ -315,6 +318,7 @@ app.post('/addTicketsToEvent', async (req, res) => {
     }
 });
 
+//Update tickets in event
 app.put('/updateTickets', async (req, res) => {
     try {
         const isAdmin = await isAdminUser(req, res);
@@ -335,6 +339,7 @@ app.put('/updateTickets', async (req, res) => {
     }
 });
 
+//delete tickets
 app.delete('/deleteTickets', async (req, res) => {
     try {
         const isAdmin = await isAdminUser(req, res);
@@ -355,9 +360,10 @@ app.delete('/deleteTickets', async (req, res) => {
     }
 });
 
+//get available ticket count for event
 app.get('/ticketsAvailability', async (req, res) => {
     try {
-        const ticketResponse = await handleRequest(SERVICES.ticketingService, `/api/tickets/${req.query.eventId}`, req.method , req, req.body);
+        const ticketResponse = await handleRequest(SERVICES.ticketingService, `/api/tickets/${req.body.eventId}`, req.method , req, req.body);
         if (ticketResponse.error) {
             return res.status(ticketResponse.status).json(ticketResponse.error);
         }
