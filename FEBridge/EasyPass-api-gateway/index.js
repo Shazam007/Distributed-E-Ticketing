@@ -357,7 +357,7 @@ app.delete('/deleteTickets', async (req, res) => {
 
 app.get('/ticketsAvailability', async (req, res) => {
     try {
-        const ticketResponse = await handleRequest(SERVICES.ticketingService, `/api/tickets/${req.body.eventId}`, req.method , req, req.body);
+        const ticketResponse = await handleRequest(SERVICES.ticketingService, `/api/tickets/${req.query.eventId}`, req.method , req, req.body);
         if (ticketResponse.error) {
             return res.status(ticketResponse.status).json(ticketResponse.error);
         }

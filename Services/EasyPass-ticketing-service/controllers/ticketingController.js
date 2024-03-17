@@ -174,7 +174,7 @@ const addTicketsToInventory = async (req, res, next) => {
     try {
         const eventId = req.params.id;
         const ticketsData = req.body.tickets;
-
+        console.log(ticketsData)
         const tickets = ticketsData.map(ticketData => new Ticket(
             eventId,
             ticketData.type,
