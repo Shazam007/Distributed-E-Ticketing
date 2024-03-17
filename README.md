@@ -31,11 +31,9 @@ Detailed description of the system functionality and how to run the implementati
 Instructions on setting up your project locally
 
 
-## Results of the tests:
+## Evaluation
 
-### Selected criteria
-
-#### Latency
+### Latency
 
 [NN group](https://www.nngroup.com/articles/response-times-3-important-limits/) , and this [research artical](https://www.researchgate.net/publication/228553434_System_Response_Time_and_User_Satisfaction_An_Experimental_Study_of_Browser-based_Applications) have shown that user attention and satisfaction can significantly drop if a task exceeds the approximate 10-second threshold. This is the point at which users begin to lose focus and may consider leaving the process. This effect is particularly considered on e-commerce and ticketing platforms.
 
@@ -50,11 +48,11 @@ Simple endpoints, such as "Add Event," "Login," and "View Event," typically invo
 |Register        | 350     |
 |View Event      | 626     |
 
-#### Throughput
+### Throughput
 
 Throughput assesses the volume of transactions processed within a given timeframe. Similar to latency, complex endpoints, such as "Refund Payment" and "Purchase Ticket," show lower throughput values, whereas other endpoints tend to display comparatively higher throughput values.
 
-|Endpoint | Through put (messages/s)|
+|Endpoint | Throughput (messages/s)|
 |----------------|----------|
 |Add Event       | 1.6      |
 |Login           | 2.9      |
@@ -63,18 +61,34 @@ Throughput assesses the volume of transactions processed within a given timefram
 |Register        | 1.6      |
 |View Event      | 1.4      |
 
-### Evaluation Scenarios
+### Load Testing 
 
-#### Load Testing 
+Load testing enables the evaluation of how the application performs under heavy loads. This includes understanding how quickly the system responds to requests, which is vital for user satisfaction and retention. For our project, we conducted two types of load testing: initially with just one user, and subsequently with 10 concurrent users. The single-user test helped us observe how the system operates under optimal conditions. Following this, we introduced 10 users to more accurately simulate real-life usage and identify any issues that arise when the system is used by multiple people simultaneously. This approach helped us determine whether our project can efficiently handle multiple users without encountering problems.
 
-Single user and multiple users
+|Endpoint | Throughput (messages/s) (1 Users) | Latency (ms) (1 Users) | Avarage Throughput (messages/s) (10 Users)  |Avarage Latency (ms) (10 Users)|
+|----------------|----------|--------|-------|---------|
+|Add Event       | 1.6      |581     |1.1    |429.2    |
+|Login           | 2.9      |625     |1.1    |379.6    |
+|Purchase Ticket | 1        |978     |1      |860.8    |
+|Refund Payment  | 0.97     |1031    |1      |1047.8   |
+|Register        | 1.6      |350     |1.1    |843.5    |
+|View Event      | 1.4      |626     |1      |127.2    |  
 
+### Results and Analysis
 
+- Latency
 
-Collect numerical data of test cases:
-- Collecting logs of container operations
-- Conduct simple analysis for documentation purposes (e.g. plots or graphs)
-![Latency 1 user](<resources/images/latency 1 users.jpg>)
+<p align="center">
+  <img src="resources/images/latency 1 users.jpg" alt="Latency 1 user" width="48%"/>
+  <img src="resources/images/latency 10 users.jpg" alt="Latency 10 user" width="48%"/>
+</p>
+
+- Throughput
+<p align="center">
+  <img src="resources/images/Throughput 1 users.jpg" alt="Throughput 1 user" width="48%"/>
+  <img src="resources/images/Throughput 10 users.jpg" alt="Throughput 10 user" width="48%"/>
+</p>
+
 
 ## Acknowledgments:
 
