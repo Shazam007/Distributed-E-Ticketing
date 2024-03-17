@@ -14,7 +14,6 @@ dotenv.config();
 
 const createEvent = async (req, res, next) => {
     try {
-        console.log("test")
         const eventData = req.body;
         const event = new Event(
             eventData.eventName,
@@ -98,8 +97,12 @@ const getAllEvents = async (req, res, next) => {
 
         const eventsArray = [];
         eventsSnapshot.forEach(event => {
-            eventsArray.push(event.data());
+            const eventData = event.data();
+            // Append document ID to the event data
+            eventData.id = event.id;
+            eventsArray.push(eventData);
         });
+
 
         res.send(eventsArray);
     } catch (error) {
