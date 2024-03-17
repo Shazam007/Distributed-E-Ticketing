@@ -14,6 +14,7 @@ dotenv.config();
 
 const createEvent = async (req, res, next) => {
     try {
+        console.log("test")
         const eventData = req.body;
         const event = new Event(
             eventData.eventName,
@@ -21,7 +22,10 @@ const createEvent = async (req, res, next) => {
             eventData.startDate,
             eventData.endDate,
             eventData.location,
-            eventData.organizer
+            eventData.organizer,
+            eventData.eventType,
+            eventData.organizerName,
+            eventData.postedDate,
         );
 
         const eventsCollection = await db.collection('Events');
