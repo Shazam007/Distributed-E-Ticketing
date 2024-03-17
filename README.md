@@ -32,21 +32,50 @@ Instructions on setting up your project locally
 
 
 ## Results of the tests:
-Detailed description of the system evaluation
-Evaluate your implementation using selected criteria, for example:
-- Number of messages / lost messages, latencies, ...
-- Request processing with different payloads, ..
-- System throughput, ..
+
+### Selected criteria
+
+#### Latency
+
+[NN group](https://www.nngroup.com/articles/response-times-3-important-limits/) , and this [research artical](https://www.researchgate.net/publication/228553434_System_Response_Time_and_User_Satisfaction_An_Experimental_Study_of_Browser-based_Applications) have shown that user attention and satisfaction can significantly drop if a task exceeds the approximate 10-second threshold. This is the point at which users begin to lose focus and may consider leaving the process. This effect is particularly considered on e-commerce and ticketing platforms.
+
+Simple endpoints, such as "Add Event," "Login," and "View Event," typically involve straightforward database queries or minor processing, leading to lower latency. Conversely, complex endpoints, like "Refund Payment," and "Purchase Ticket," involve multiple steps, internal service calls, and more intensive database operations, thereby justifying higher latency.
+
+|Endpoint | Latency (ms) |
+|----------------|---------|
+|Add Event       | 581     |
+|Login           | 625     |
+|Purchase Ticket | 978     |
+|Refund Payment  | 1031    |
+|Register        | 350     |
+|View Event      | 626     |
+
+#### Throughput
+
+Throughput assesses the volume of transactions processed within a given timeframe. Similar to latency, complex endpoints, such as "Refund Payment" and "Purchase Ticket," show lower throughput values, whereas other endpoints tend to display comparatively higher throughput values.
+
+|Endpoint | Through put (messages/s)|
+|----------------|----------|
+|Add Event       | 1.6      |
+|Login           | 2.9      |
+|Purchase Ticket | 1        |
+|Refund Payment  | 0.97     |
+|Register        | 1.6      |
+|View Event      | 1.4      |
+
+### Evaluation Scenarios
+
+#### Load Testing 
+
+Single user and multiple users
 
 
-Design two evaluation scenarios that you compare with each other, for example:
-- Small number / large number of messages
-- Small payload / big payload
 
 Collect numerical data of test cases:
 - Collecting logs of container operations
 - Conduct simple analysis for documentation purposes (e.g. plots or graphs)
+![Latency 1 user](<resources/images/latency 1 users.jpg>)
 
 ## Acknowledgments:
-list resources you find helpful
+
 
