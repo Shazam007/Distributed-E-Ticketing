@@ -92,6 +92,14 @@ Example :
 Controller function Names:
 The controller function names such as processPayment and refundPayment in the paymentController.js file are an example, and they are also descriptive and self-explanatory. These clearly indicate the actions they perform, which is according to the Single Responsibility Principle (SRP) by focusing on a specific task 
 ## Built with:
+
+- [x] NodeJS
+- [x] React
+- [x] AWS
+- [x] Firebase 
+- [x] HTTP
+- [x] JMETER
+
 ### Functionalities Overview:
 
 #### User Management:
@@ -124,6 +132,41 @@ The controller function names such as processPayment and refundPayment in the pa
 
 #### Order Management:
 - Upon successful payment, order details are sent to the user.
+
+### Detailed Options
+#### Authentication and Authorization:
+- The system uses JWT-based authentication. Users need to log in to perform certain actions, and there's middleware to handle authentication (authMiddleware).
+
+#### Ticket Reservation:
+   - Users can reserve tickets for events (reserveTickets function). The system checks ticket availability and reserves tickets accordingly.
+
+#### Payment Processing:
+   - After ticket reservation, the system processes payments (processPayment function). It associates the payment with the user and the order.
+
+####  Order Management:
+   - Once payment is processed, the system manages the order (manageOrder function). This likely includes updating the status of the order and associating it with the user and the purchased tickets.
+
+#### Refund Handling:
+   - Admins can initiate refunds (/refundPayment endpoint). This involves updating the payment status and potentially releasing reserved tickets.
+
+#### User Management:
+   - Users can register (/register endpoint) and log in (/login endpoint). Admins are differentiated and have additional privileges.
+
+#### Event Management:
+   - Admins can add, update, and delete events (/addEvent, /updateEvent, /deleteEvent endpoints). They can also manage tickets associated with events.
+
+#### Ticket Management:
+   - Admins can add, update, and delete tickets (/addTicketsToEvent, /updateTickets, /deleteTickets endpoints). They can also view ticket availability for events (/ticketsAvailability endpoint).
+
+#### Viewing Events:
+   - Users can view available events (/viewEvents endpoint).
+
+#### Error Handling:
+    - The system provides appropriate error messages and handles internal errors gracefully.
+
+#### Communication with Microservices:
+    - The API gateway communicates with various microservices (user, ticketing, payment, event, order management) to perform actions. It abstracts away the complexities of direct communication with these services.
+
 ## Getting Started:
 
 ### Locally install
