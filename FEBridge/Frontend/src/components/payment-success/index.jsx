@@ -40,7 +40,7 @@ const index = () => {
 
 
       {/* <!-- About Text Content --> */}
-      <section className="about-section">
+      <section className="about-section pb100">
         <div className="container">
 
           {/* End .row */}

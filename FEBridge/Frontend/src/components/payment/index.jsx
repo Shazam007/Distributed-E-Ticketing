@@ -83,7 +83,7 @@ const index = () => {
       {/* <BreadCrumbBanner /> */}
 
       {/* <!-- Our Contact --> */}
-      <section className="our-contact pb0 bgc-f7 mt70">
+      <section className="our-contact pb100 bgc-f7 mt70 mb40">
         <div className="container">
           <div className="row">
             <div className="col-lg-7 col-xl-8">
