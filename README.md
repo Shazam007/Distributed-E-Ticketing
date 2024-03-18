@@ -293,7 +293,8 @@ Run the script ./setup_gateway.sh
 
 Make sure to add the other instance’s (node with all microservices) IP to the .env to build the communication. 
 
-## Results of the tests: Evaluation
+## Evaluation
+JMeter has been utilized for obtaining results and evaluation, as it allows us to measure latency, throughput, and conduct load testing effectively.
 
 ### Latency
 
