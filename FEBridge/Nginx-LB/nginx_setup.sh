@@ -6,14 +6,6 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-# Check if server name is provided
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <server_name>"
-    exit 1
-fi
-
-SERVER_NAME="$1"
-
 # Install Nginx
 apt update
 apt install -y nginx

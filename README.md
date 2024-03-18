@@ -207,7 +207,7 @@ At the end of the script, all 5 services will be running on ports (3001,3002,300
 
 To see the running service list, use
 ```bash
-Pm2 list 
+pm2 list 
 ```
 
 Make sure to add those ports to the security group to accept the traffic from other instance (Add that instances IP as the source). 
@@ -225,15 +225,17 @@ Setup Nginx
 
 cd into the Nginx directory
 ```bash
-cd ./Distributed-E-Ticketing/FEBridge/Nginx 
+cd ./Distributed-E-Ticketing/FEBridge/Nginx-LB 
 ```
 
-First add the instances’s self IP to server_name 
-Ex: server_name 54.167.30.104
+Give permission to run the automation script
+```bash
+chmod +x nginx_setup.sh
+```
 
 Run the script to install and configure nginx
 ```bash
-./setup_nginx.sh
+sudo ./nginx_setup.sh
 ```
 
 Configurations aim to route the traffic to the initializing frontend services in next steps. Also open the TCP 80 port in security groups to accept the incoming HTTP traffic.
@@ -242,12 +244,16 @@ Setup Frontend services
 
 cd into the FE directory
 ```bash
-cd ./Distributed-E-Ticketing/FEBridge/FE 
+cd ./Distributed-E-Ticketing/FEBridge/Frontend 
+```
+Give permission to run the automation script
+```bash
+chmod +x setup_frontend.sh
 ```
 
 Run the script ./setup_frontend.sh
 ```bash
-./setup_frontend.sh
+sudo ./setup_frontend.sh
 ```
 
 This will spin up two frontend applications on ports 3001 and 3002, along with a pm2 service to monitor the instance traffic for scaling up or down the instances. The script is designed to duplicate the directory (or delete if scaling down), assign an available port to the application, and then add it to the load balancing roster of the Nginx server.
@@ -261,13 +267,18 @@ cd into the FE directory
 ```bash
 cd ./Distributed-E-Ticketing/FEBridge/EasyPass-api-gateway
 ```
+Make sure to add the other instance’s (node with all microservices) IP to the .env to build the communication. 
+
+Give permission to run the automation script
+```bash
+chmod +x setup_gateway.sh
+```
 
 Run the script ./setup_gateway.sh
 ```bash
 ./setup_gateway.sh
 ```
 
-Make sure to add the other instance’s (node with all microservices) IP to the .env to build the communication. 
 
 ## Evaluation
 
