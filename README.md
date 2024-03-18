@@ -1,8 +1,8 @@
 
-888888    db    .dP"Y8 Yb  dP     88""Yb    db    .dP"Y8 .dP"Y8 
-88__     dPYb   `Ybo."  YbdP      88__dP   dPYb   `Ybo." `Ybo." 
-88""    dP__Yb  o.`Y8b   8P       88"""   dP__Yb  o.`Y8b o.`Y8b 
-888888 dP""""Yb 8bodP'  dP        88     dP""""Yb 8bodP' 8bodP' 
+____ ____ ____ _   _    ___  ____ ____ ____ 
+|___ |__| [__   \_/     |__] |__| [__  [__  
+|___ |  | ___]   |      |    |  | ___] ___] 
+                                            
 
 # 🔴 Distributed E-Ticketing System 🔴 
 
