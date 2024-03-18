@@ -92,6 +92,14 @@ Example :
 Controller function Names:
 The controller function names such as processPayment and refundPayment in the paymentController.js file are an example, and they are also descriptive and self-explanatory. These clearly indicate the actions they perform, which is according to the Single Responsibility Principle (SRP) by focusing on a specific task 
 ## Built with:
+
+- [x] NodeJS
+- [x] React
+- [x] AWS
+- [x] Firebase 
+- [x] HTTP
+- [x] JMETER
+
 ### Functionalities Overview:
 
 #### User Management:
@@ -124,6 +132,41 @@ The controller function names such as processPayment and refundPayment in the pa
 
 #### Order Management:
 - Upon successful payment, order details are sent to the user.
+
+### Detailed Options
+#### Authentication and Authorization:
+- The system uses JWT-based authentication. Users need to log in to perform certain actions, and there's middleware to handle authentication (authMiddleware).
+
+#### Ticket Reservation:
+   - Users can reserve tickets for events (reserveTickets function). The system checks ticket availability and reserves tickets accordingly.
+
+#### Payment Processing:
+   - After ticket reservation, the system processes payments (processPayment function). It associates the payment with the user and the order.
+
+####  Order Management:
+   - Once payment is processed, the system manages the order (manageOrder function). This likely includes updating the status of the order and associating it with the user and the purchased tickets.
+
+#### Refund Handling:
+   - Admins can initiate refunds (/refundPayment endpoint). This involves updating the payment status and potentially releasing reserved tickets.
+
+#### User Management:
+   - Users can register (/register endpoint) and log in (/login endpoint). Admins are differentiated and have additional privileges.
+
+#### Event Management:
+   - Admins can add, update, and delete events (/addEvent, /updateEvent, /deleteEvent endpoints). They can also manage tickets associated with events.
+
+#### Ticket Management:
+   - Admins can add, update, and delete tickets (/addTicketsToEvent, /updateTickets, /deleteTickets endpoints). They can also view ticket availability for events (/ticketsAvailability endpoint).
+
+#### Viewing Events:
+   - Users can view available events (/viewEvents endpoint).
+
+#### Error Handling:
+    - The system provides appropriate error messages and handles internal errors gracefully.
+
+#### Communication with Microservices:
+    - The API gateway communicates with various microservices (user, ticketing, payment, event, order management) to perform actions. It abstracts away the complexities of direct communication with these services.
+
 ## Getting Started:
 
 ### Locally install
@@ -226,8 +269,9 @@ Run the script ./setup_gateway.sh
 
 Make sure to add the other instance’s (node with all microservices) IP to the .env to build the communication. 
 
-## Results of the tests: Evaluation
+## Evaluation
 
+JMeter has been utilized for obtaining results and evaluation, as it allows us to measure latency, throughput, and conduct load testing effectively.
 ### Latency
 
 [NN group](https://www.nngroup.com/articles/response-times-3-important-limits/) , and this [research artical](https://www.researchgate.net/publication/228553434_System_Response_Time_and_User_Satisfaction_An_Experimental_Study_of_Browser-based_Applications) have shown that user attention and satisfaction can significantly drop if a task exceeds the approximate 10-second threshold. This is the point at which users begin to lose focus and may consider leaving the process. This effect is particularly considered on e-commerce and ticketing platforms.
@@ -271,12 +315,22 @@ Load testing enables the evaluation of how the application performs under heavy 
 
 ### Results and Analysis
 
-### Latency
-  ![l1](https://github.com/Death-RAW/sd2des_example/assets/61182412/4b1eec43-ea23-43ec-9c31-636fded4d0a6)
-![l2aqv](https://github.com/Death-RAW/sd2des_example/assets/61182412/8953fbe3-6eab-4bfc-b024-731022bc3fbd)
+#### Latency
 
-### Throughput
-![tp1](https://github.com/Death-RAW/sd2des_example/assets/61182412/14a90249-c657-4376-a6f1-0cdba76921d1)
-![tp2ac](https://github.com/Death-RAW/sd2des_example/assets/61182412/8bcdd5ff-4b46-4acf-9ebf-007e94a2b42e)
+The difference in latency between single-user and multi-user scenarios varies. We cannot definitively state that multi-user scenarios always exhibit higher latency. Endpoints involving complex transactions or database writes tend to demonstrate increased latency under load, aligning with expectations.
+
+<p align="center">
+  <img src="resources/images/latency 1 users.jpg" alt="Latency 1 user" width="48%"/>
+  <img src="resources/images/latency 10 users.jpg" alt="Latency 10 user" width="48%"/>
+</p>
+
+#### Throughput
+
+The difference in throughput between single-user and multi-user scenarios shows some deviations, meaning that single-user scenarios exhibit higher throughput than multi-user scenarios. This is an expected scenario, as the number of users increases, the number of messages processed within a given time decreases.
+
+<p align="center">
+  <img src="resources/images/Throughput 1 users.jpg" alt="Throughput 1 user" width="48%"/>
+  <img src="resources/images/Throughput 10 users.jpg" alt="Throughput 10 user" width="48%"/>
+</p>
 
 
